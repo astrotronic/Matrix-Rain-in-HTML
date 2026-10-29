@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Matrix Rain</title>
+    <style>
+        /* Make the background black and remove scrollbars */
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: black;
+        }
+
+        canvas {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="matrix"></canvas>
+
+    <script>
+        const canvas = document.getElementById('matrix');
+        const ctx = canvas.getContext('2d');
+
+        // Make the canvas full screen
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        // Characters to use (Katakana, Latin, and Numbers/Symbols)
+        const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*()+-=<>{}[];:,.<>?アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤイユヨラシスセソタチツテトナニヌネノワヲン";
+        const fontSize = 16;
+        const columns = canvas.width / fontSize;
+
+        // An array to keep track of the y-position of each drop
+        // Each index represents a column
+        const drops = [];
+        for (let i = 0; i < columns; i++) {
+            drops[i] = 1;
+        }
+
+        function draw() {
+            // Create a semi-transparent black rectangle to draw over the old frame
+            // This creates the "trailing" effect
+            ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Set the font color and style
+            ctx.fillStyle = "#0F0"; // Classic Matrix Green
+            ctx.font = fontSize + "px monospace";
+
+            for (let i = 0; i < drops.length; i++) {
+                // Pick a random character from the letters string
+                const text = letters.charAt(Math.floor(Math.random() * letters.length));
+                
+                // Draw the character
+                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+
+                // If the drop hits the bottom of the screen, reset it to the top randomly
+                if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+                    drops[i] = 0;
+                }
+
+                // Move the drop down
+                drops[i]++;
+            }
+        }
+
+        // Run the animation at roughly 30 frames per second
+        setInterval(draw, 33);
+    </script>
+</body>
+</html>
